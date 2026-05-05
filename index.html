@@ -1,408 +1,48 @@
 <!DOCTYPE html>
-<html lang="ms" class="scroll-smooth">
+<html lang="ms">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VEKTOR XPOSE NHSE3 </title>
-    
-    <!-- Favicon -->
-    <link rel="icon" href="https://www.uitm.work/logoxpose.png" type="image/png">
-    
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind Configuration -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Poppins', 'sans-serif'],
-                    },
-                    colors: {
-                        uitm: {
-                            purple: '#4B0082',
-                            gold: '#FFD700',
-                            light: '#F3E8FF'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    
-    <style>
-        /* Custom Animations */
-        .fade-in-up {
-            animation: fadeInUp 1s ease-out forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        
-        .delay-100 { animation-delay: 100ms; }
-        .delay-200 { animation-delay: 200ms; }
-        .delay-300 { animation-delay: 300ms; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>VEKTOR XPOSE</title>
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
+  <!-- Favicon (ikon tab browser) -->
+  <link rel="icon" href="logoxpose.png" type="image/png">
+
+  <style>
+    /* Reset margin dan padding */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    /* Iframe penuh skrin */
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* Optional: Logo di dalam laman (atas iframe) */
+    .logo {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      height: 50px;
+      z-index: 1000;
+    }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans antialiased selection:bg-uitm-purple selection:text-white">
+<body>
 
-    <!-- Navigation -->
-    <nav class="bg-white/90 backdrop-blur-md fixed w-full z-50 top-0 left-0 border-b border-gray-200 shadow-sm">
-        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between p-4">
-            <a href="#" class="flex items-center space-x-2">
-                <div class="w-10 h-10 bg-uitm-purple rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-md">
-                    VX
-                </div>
-                <span class="self-center text-xl md:text-2xl font-bold whitespace-nowrap text-uitm-purple tracking-tight">VEKTORXPOSE</span>
-            </a>
-            <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="navbar-default" aria-expanded="false" onclick="document.getElementById('navbar-default').classList.toggle('hidden')">
-                <span class="sr-only">Buka menu utama</span>
-                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
-                </svg>
-            </button>
-            <div class="hidden w-full lg:block lg:w-auto" id="navbar-default">
-                <ul class="font-medium flex flex-col p-4 lg:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 lg:flex-row lg:space-x-8 lg:mt-0 lg:border-0 lg:bg-transparent">
-                    <li><a href="#utama" class="block py-2 px-3 text-uitm-purple rounded lg:bg-transparent lg:p-0 font-semibold hover:text-purple-600 transition">Utama</a></li>
-                    <li><a href="#komponen" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-uitm-purple lg:p-0 transition">Komponen Wajib</a></li>
-                    <li><a href="#fasa" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-uitm-purple lg:p-0 transition">Fasa Pelaksanaan</a></li>
-                    <li><a href="#hasil" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-uitm-purple lg:p-0 transition">Hasil Deliverable</a></li>
-                    <li><a href="#pasukan" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-uitm-purple lg:p-0 transition">Pasukan NHSE3</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section id="utama" class="pt-32 pb-20 lg:pt-40 lg:pb-28 bg-gradient-to-br from-gray-50 to-uitm-light relative overflow-hidden">
-        <!-- Background Decoration -->
-        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-uitm-purple/5 blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 rounded-full bg-uitm-gold/10 blur-3xl"></div>
-        
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center max-w-4xl mx-auto">
-                <span class="inline-block py-1.5 px-4 rounded-full bg-uitm-purple/10 text-uitm-purple text-sm font-semibold mb-6 border border-uitm-purple/20 fade-in-up">PROFESOR DR NAZRI CHE DOM | ENV462 INTEGRATED VECTOR MANAGEMENT</span>
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 fade-in-up delay-100">
-                    Memperkasa Komuniti Melawan Denggi Bersama <span class="text-transparent bg-clip-text bg-gradient-to-r from-uitm-purple to-purple-600">VEKTORXPOSE</span>
-                </h1>
-                <p class="text-lg md:text-xl text-gray-600 mb-8 fade-in-up delay-200">
-                    Satu inisiatif bersepadu bagi membasmi ancaman vektor pembawa penyakit yang direka dan dikendalikan sepenuhnya oleh pelajar kumpulan <strong class="text-uitm-purple">NHSE3</strong>.
-                </p>
-                <div class="flex flex-col sm:flex-row justify-center gap-4 fade-in-up delay-300">
-                    <a href="#komponen" class="px-8 py-3 rounded-full bg-uitm-purple text-white font-semibold hover:bg-purple-800 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">Lihat Komponen Projek</a>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Komponen Wajib Section -->
-    <section id="komponen" class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">Komponen Wajib Dalam Setiap Team</h2>
-                <div class="w-20 h-1 bg-uitm-gold mx-auto rounded-full"></div>
-                <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Setiap kumpulan perlu mengintegrasikan empat (4) elemen utama dalam satu program KTP.</p>
-            </div>
+  <!-- Iframe paparkan web app Google Script -->
+  <iframe src="https://script.google.com/a/macros/student.uitm.edu.my/s/AKfycbzIIol8rgNXfPxJ00ItvMjq7EctyBnrMS4mbryCMwr29KAHP18O_sfl5aa2ZetDImRE/exec"></iframe>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Komponen 1 -->
-                <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:border-uitm-purple/30 hover:shadow-xl transition duration-300 group">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-110 transition">
-                            <span class="font-bold text-xl">1</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900">Awareness & Behaviour (KAP)</h3>
-                    </div>
-                    <ul class="space-y-3 text-gray-600">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-uitm-purple mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Menjalankan penilaian <em>Knowledge, Attitude & Practice</em> (pre & post)</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-uitm-purple mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Aktiviti kesedaran (ceramah, poster, interaktif)</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Komponen 2 -->
-                <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:border-uitm-purple/30 hover:shadow-xl transition duration-300 group">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600 group-hover:scale-110 transition">
-                            <span class="font-bold text-xl">2</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900">Environmental Management</h3>
-                    </div>
-                    <ul class="space-y-3 text-gray-600">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-uitm-purple mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Mengenalpasti kawasan pembiakan Aedes</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-uitm-purple mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Aktiviti pengurangan sumber (contoh: gotong-royong)</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Komponen 3 -->
-                <div class="p-8 rounded-2xl bg-uitm-purple text-white hover:shadow-xl transition duration-300 group md:transform md:-translate-y-2 shadow-lg">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:scale-110 transition shadow-inner">
-                            <span class="font-bold text-xl">3</span>
-                        </div>
-                        <h3 class="text-xl font-bold">Technology & Innovation</h3>
-                    </div>
-                    <ul class="space-y-3 text-white/90">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-uitm-gold mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Penggunaan elemen digital (QR code, poster digital, risk map, dsb.)</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-uitm-gold mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Inovasi penyampaian maklumat</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Komponen 4 -->
-                <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:border-uitm-purple/30 hover:shadow-xl transition duration-300 group">
-                    <div class="flex items-center gap-4 mb-4">
-                        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 group-hover:scale-110 transition">
-                            <span class="font-bold text-xl">4</span>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900">Transmission & Protection</h3>
-                    </div>
-                    <ul class="space-y-3 text-gray-600">
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-uitm-purple mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Demonstrasi perlindungan diri (repellent, pakaian)</span>
-                        </li>
-                        <li class="flex items-start">
-                            <svg class="w-5 h-5 text-uitm-purple mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            <span>Penerangan kitaran jangkitan denggi</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Fasa Pelaksanaan Section -->
-    <section id="fasa" class="py-20 bg-gray-50 border-t border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold text-gray-900 mb-4">Fasa Pelaksanaan (Wajib)</h2>
-                <div class="w-20 h-1 bg-uitm-purple mx-auto rounded-full"></div>
-                <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Semua kumpulan perlu melalui 5 fasa pembangunan yang sistematik ini.</p>
-            </div>
-
-            <div class="relative max-w-4xl mx-auto">
-                <!-- Vertical Line (Desktop) -->
-                <div class="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gray-200 rounded"></div>
-
-                <div class="space-y-8">
-                    <!-- Fasa 1 -->
-                    <div class="relative flex flex-col md:flex-row items-center">
-                        <div class="md:w-1/2 md:pr-8 text-center md:text-right mb-4 md:mb-0">
-                            <h4 class="text-xl font-bold text-uitm-purple">1. Community Selection</h4>
-                            <p class="text-gray-600 mt-2">Pilih komuniti sasaran (flat / taman / sekolah / kampung) dan sertakan justifikasi risiko denggi.</p>
-                        </div>
-                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-uitm-purple border-4 border-white shadow flex-col items-center justify-center">
-                            <div class="w-2 h-2 bg-white rounded-full"></div>
-                        </div>
-                        <div class="md:w-1/2 md:pl-8"></div>
-                    </div>
-
-                    <!-- Fasa 2 -->
-                    <div class="relative flex flex-col md:flex-row items-center">
-                        <div class="md:w-1/2 md:pr-8 mb-4 md:mb-0 order-2 md:order-1"></div>
-                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-uitm-purple border-4 border-white shadow flex-col items-center justify-center z-10">
-                            <div class="w-2 h-2 bg-white rounded-full"></div>
-                        </div>
-                        <div class="md:w-1/2 md:pl-8 text-center md:text-left order-1 md:order-2 mb-4 md:mb-0">
-                            <h4 class="text-xl font-bold text-uitm-purple">2. Needs Assessment</h4>
-                            <p class="text-gray-600 mt-2">Pemerhatian lapangan / mini survey untuk mengenalpasti isu sebenar komuniti.</p>
-                        </div>
-                    </div>
-
-                    <!-- Fasa 3 -->
-                    <div class="relative flex flex-col md:flex-row items-center">
-                        <div class="md:w-1/2 md:pr-8 text-center md:text-right mb-4 md:mb-0">
-                            <h4 class="text-xl font-bold text-uitm-purple">3. Implementation</h4>
-                            <p class="text-gray-600 mt-2">Laksanakan intervensi secara lengkap yang merangkumi semua komponen wajib.</p>
-                        </div>
-                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-uitm-gold border-4 border-white shadow flex-col items-center justify-center z-10">
-                            <div class="w-2 h-2 bg-white rounded-full"></div>
-                        </div>
-                        <div class="md:w-1/2 md:pl-8"></div>
-                    </div>
-
-                    <!-- Fasa 4 -->
-                    <div class="relative flex flex-col md:flex-row items-center">
-                        <div class="md:w-1/2 md:pr-8 mb-4 md:mb-0 order-2 md:order-1"></div>
-                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-uitm-purple border-4 border-white shadow flex-col items-center justify-center z-10">
-                            <div class="w-2 h-2 bg-white rounded-full"></div>
-                        </div>
-                        <div class="md:w-1/2 md:pl-8 text-center md:text-left order-1 md:order-2 mb-4 md:mb-0">
-                            <h4 class="text-xl font-bold text-uitm-purple">4. Evaluation</h4>
-                            <p class="text-gray-600 mt-2">Nilai impak keberkesanan menggunakan data sebelum & selepas aktiviti.</p>
-                        </div>
-                    </div>
-
-                    <!-- Fasa 5 -->
-                    <div class="relative flex flex-col md:flex-row items-center">
-                        <div class="md:w-1/2 md:pr-8 text-center md:text-right mb-4 md:mb-0">
-                            <h4 class="text-xl font-bold text-uitm-purple">5. Final Report</h4>
-                            <p class="text-gray-600 mt-2">Penyediaan laporan lengkap yang disusuli dengan analisis impak projek keseluruhannya.</p>
-                        </div>
-                        <div class="hidden md:flex absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full bg-green-500 border-4 border-white shadow flex-col items-center justify-center z-10">
-                            <div class="w-2 h-2 bg-white rounded-full"></div>
-                        </div>
-                        <div class="md:w-1/2 md:pl-8"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Hasil / Deliverable Section -->
-    <section id="hasil" class="py-20 bg-uitm-purple text-white relative">
-        <div class="absolute inset-0 bg-black/10"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col lg:flex-row items-center gap-12">
-                <div class="lg:w-1/3">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Hasil / Deliverable</h2>
-                    <div class="w-16 h-1 bg-uitm-gold rounded-full mb-6"></div>
-                    <p class="text-white/80 mb-6">Setiap kumpulan perlu memastikan senarai semak kelengkapan projek ini disediakan sebelum program tamat.</p>
-                    
-                    <div class="bg-white/10 p-4 rounded-lg border border-white/20 mt-8">
-                        <h4 class="font-bold text-uitm-gold mb-2">Nota Penting:</h4>
-                        <p class="text-sm text-white/90 leading-relaxed">Semasa Seminar 1, pembahagian kumpulan telah dilaksanakan dan perbincangan kumpulan juga telah dilaksanakan.</p>
-                    </div>
-                </div>
-                
-                <div class="lg:w-2/3 w-full bg-white text-gray-800 rounded-2xl p-8 shadow-2xl">
-                    <ul class="space-y-4">
-                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-4">
-                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            </div>
-                            <span class="text-lg font-medium text-gray-800">Laporan KTP lengkap</span>
-                        </li>
-                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-4">
-                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            </div>
-                            <span class="text-lg font-medium text-gray-800">Data sebelum & selepas <span class="text-gray-500 text-sm font-normal">(contoh: KAP / pemerhatian)</span></span>
-                        </li>
-                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-4">
-                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            </div>
-                            <span class="text-lg font-medium text-gray-800">Bukti bergambar / video aktiviti</span>
-                        </li>
-                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-4">
-                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            </div>
-                            <span class="text-lg font-medium text-gray-800">Evidence impak <span class="text-gray-500 text-sm font-normal">(perubahan tingkah laku / persekitaran)</span></span>
-                        </li>
-                        <li class="flex items-center p-3 hover:bg-gray-50 rounded-lg transition border-b-0">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-4">
-                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            </div>
-                            <span class="text-lg font-medium text-gray-800">Elemen inovasi <span class="text-gray-500 text-sm font-normal">(digital / teknologi)</span></span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Team Section -->
-    <section id="pasukan" class="py-20 bg-gray-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-12">
-                <div class="w-full md:w-1/2">
-                    <!-- Ganti gambar dengan gambar kumpulan/aktiviti sebenar nanti -->
-                    <img src="https://www.ikjon.info/nhse3/editorial.jpeg" alt="Pasukan Pelajar" class="rounded-2xl shadow-2xl object-cover h-96 w-full">
-                </div>
-                <div class="w-full md:w-1/2">
-                    <div class="inline-flex items-center space-x-2 bg-uitm-gold/20 text-yellow-800 py-1 px-3 rounded-full text-sm font-semibold mb-6">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                        <span>Diuruskan Oleh Pelajar UiTM</span>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Barisan Pelaksana <br><span class="text-uitm-purple">Kelas NHSE3</span></h2>
-                    <p class="text-gray-600 mb-6 leading-relaxed">
-                        Projek VEKTORXPOSE ini digerakkan sebagai salah satu inisiatif Knowledge Transfer Programme (KTP) dalam memberi kesedaran mengenai ancaman denggi kepada komuniti.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white pt-16 pb-8 border-t-4 border-uitm-purple">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                <div>
-                    <a href="#" class="flex items-center space-x-2 mb-6">
-                        <div class="w-8 h-8 bg-white rounded flex items-center justify-center text-uitm-purple font-bold text-lg">
-                            VX
-                        </div>
-                        <span class="text-2xl font-bold tracking-tight">VEKTORXPOSE</span>
-                    </a>
-                    <p class="text-gray-400">
-                        Program KTP Membasmi Denggi - Platform inovatif yang mengetengahkan kemahiran praktikal pelajar kumpulan NHSE3 bersama komuniti.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-4">Pautan Pantas</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#utama" class="hover:text-uitm-gold transition">Utama</a></li>
-                        <li><a href="#komponen" class="hover:text-uitm-gold transition">Komponen Projek</a></li>
-                        <li><a href="#fasa" class="hover:text-uitm-gold transition">Fasa Pelaksanaan</a></li>
-                        <li><a href="#hasil" class="hover:text-uitm-gold transition">Deliverable</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-bold mb-4">Hubungi Kami</h4>
-                    <p class="text-gray-400 mb-2">Universiti Teknologi MARA (UiTM)</p>
-                    <p class="text-gray-400 mb-2">Kumpulan/Kelas: NHSE3</p>
-                    <p class="text-gray-400">Program KTP Kesedaran Denggi</p>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-                <p>&copy; 2026 VEKTORXPOSE. Hak Cipta Terpelihara Pelajar UiTM NHSE3.</p>
-                <div class="mt-4 md:mt-0 flex space-x-4">
-                    <span>UiTM Kampus Cawangan Puncak Alam</span>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Smooth Scrolling Script for Navigation -->
-    <script>
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
 </body>
 </html>
-
