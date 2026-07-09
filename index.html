@@ -1,20 +1,755 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="ms" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VEKTOR XPOSE</title>
-  <style>
-    body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f3f4f6; margin: 0; }
-    .btn { background-color: #20B2AA; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 18px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    .btn:hover { background-color: #1a948e; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VEKTORXPOSE | Program KTP UiTM NHSE3</title>
+    
+    <link rel="icon" href="https://www.uitm.work/logoxpose.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Poppins', 'sans-serif'], },
+                    colors: {
+                        uitm: { purple: '#4B0082', gold: '#FFD700', light: '#F3E8FF', mint: '#20B2AA' }
+                    },
+                    animation: { 'scroll': 'scroll 40s linear infinite', },
+                    keyframes: { scroll: { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' }, } }
+                }
+            }
+        }
+    </script>
+    <style>
+        .fade-in-up { animation: fadeInUp 1s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .pause-on-hover:hover { animation-play-state: paused; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
 </head>
-<body>
-  <div style="text-align: center;">
-    <h2>Selamat Datang ke Portal VEKTORXPOSE</h2>
-    <p>Klik butang di bawah untuk ke portal rasmi.</p>
-    <a class="btn" href="https://script.google.com/macros/s/AKfycbzIIol8rgNXfPxJ00ItvMjq7EctyBnrMS4mbryCMwr29KAHP18O_sfl5aa2ZetDImRE/exec" target="_blank">Buka Portal Sistem</a>
-  </div>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased selection:bg-uitm-mint selection:text-white">
+
+    <nav class="bg-white/90 backdrop-blur-md fixed w-full z-50 top-0 left-0 border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between p-4">
+            <a href="#" class="flex items-center space-x-2">
+                <img src="https://www.uitm.work/logoxpose.png" alt="Logo VEKTORXPOSE" class="w-10 h-10 object-contain rounded-lg shadow-sm bg-white">
+                <span class="self-center text-xl md:text-2xl font-bold whitespace-nowrap text-uitm-purple tracking-tight">VEKTORXPOSE</span>
+            </a>
+            <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="navbar-default" aria-expanded="false" onclick="document.getElementById('navbar-default').classList.toggle('hidden')">
+                <span class="sr-only">Buka menu utama</span>
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+                </svg>
+            </button>
+            <div class="hidden w-full lg:block lg:w-auto" id="navbar-default">
+                <ul class="font-medium flex flex-col p-4 lg:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 lg:flex-row lg:space-x-4 xl:space-x-6 lg:mt-0 lg:border-0 lg:bg-transparent text-sm xl:text-base">
+                    <li><a href="#utama" class="block py-2 px-3 text-uitm-purple rounded lg:bg-transparent lg:p-0 font-semibold hover:text-uitm-mint transition">Utama</a></li>
+                    <li><a href="#komponen" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-uitm-mint lg:p-0 transition">Komponen</a></li>
+                    <li><a href="#panduan" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-uitm-mint lg:p-0 transition">Panduan Tanam</a></li>
+                    <li><a href="#peta" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-uitm-mint lg:p-0 transition">Peta & Graf</a></li>
+                    <li><a href="#aduan" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-uitm-mint lg:p-0 transition">E-Aduan</a></li>
+                    <li><a href="#pautan" class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 lg:hover:bg-transparent lg:border-0 lg:hover:text-uitm-mint lg:p-0 transition">Pautan</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="utama" class="pt-32 pb-24 lg:pt-40 lg:pb-32 bg-gradient-to-br from-green-50 to-teal-50 relative overflow-hidden">
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-uitm-mint/10 blur-3xl"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 rounded-full bg-uitm-purple/5 blur-3xl"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+                <span class="inline-block py-1.5 px-4 rounded-full bg-uitm-mint/20 text-teal-800 text-sm font-semibold mb-6 border border-uitm-mint/30 fade-in-up">PROFESOR DR NAZRI CHE DOM | ENV462 INTEGRATED VECTOR MANAGEMENT</span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6 fade-in-up delay-100">
+                    Memperkasa Komuniti Melawan Denggi Melalui <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-uitm-mint">Intervensi Hijau Pokok Mint</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-600 mb-8 fade-in-up delay-200">
+                    Satu inisiatif bersepadu bagi membasmi ancaman vektor menerusi kaedah biologi oleh pelajar <strong class="text-uitm-purple">NHSE3 UiTM</strong>.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4 fade-in-up delay-300">
+                    <a href="#peta" class="px-8 py-3 rounded-full bg-uitm-mint text-white font-semibold hover:bg-teal-600 transition shadow-lg hover:shadow-xl transform hover:-translate-y-1">Lihat Peta Intervensi</a>
+                    <a href="#aduan" class="px-8 py-3 rounded-full bg-white text-uitm-mint border-2 border-uitm-mint font-semibold hover:bg-green-50 transition shadow-sm transform hover:-translate-y-1">Sertai Komuniti</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cuaca" class="relative z-20 -mt-14 mb-12 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl p-6 md:p-8 shadow-xl text-white flex flex-col md:flex-row items-center justify-between transform transition hover:-translate-y-1">
+            <div class="flex items-center gap-6 mb-4 md:mb-0">
+                <div class="text-6xl md:text-7xl drop-shadow-lg" id="weather-icon">🌤️</div>
+                <div>
+                    <p class="text-blue-100 text-sm md:text-base font-semibold mb-1">Cuaca Semasa (PANGSAPURI BAIDURI BANDAR TASIK KESUMA BERANANG)</p>
+                    <div class="flex items-baseline gap-4">
+                        <h3 id="weather-temp" class="text-5xl font-bold">--°C</h3>
+                        <p id="weather-desc" class="text-xl font-medium">Memuat turun...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-auto text-center md:text-right bg-white/20 p-4 rounded-xl backdrop-blur-sm shadow-inner">
+                <p class="text-blue-100 text-xs font-semibold uppercase tracking-wider mb-1">Kelembapan Udara</p>
+                <p id="weather-humidity" class="text-3xl font-bold">--%</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="komponen" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Integrasi 4 Komponen Utama KTP</h2>
+                <div class="w-20 h-1 bg-uitm-mint mx-auto rounded-full"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:border-uitm-mint/30 hover:shadow-xl transition group">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 group-hover:scale-110 transition"><span class="font-bold text-xl">1</span></div>
+                        <h3 class="text-xl font-bold text-gray-900">Awareness & Behaviour</h3>
+                    </div>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start"><svg class="w-5 h-5 text-uitm-mint mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Penilaian KAP (Knowledge, Attitude & Practice) komuniti terhadap pencegahan denggi secara semula jadi.</span></li>
+                    </ul>
+                </div>
+                <div class="p-8 rounded-2xl bg-gradient-to-br from-teal-500 to-uitm-mint text-white hover:shadow-xl transition group md:transform md:-translate-y-2 shadow-lg">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:scale-110 transition shadow-inner"><span class="font-bold text-xl">2</span></div>
+                        <h3 class="text-xl font-bold">Environmental Management</h3>
+                    </div>
+                    <ul class="space-y-3 text-white/90">
+                        <li class="flex items-start"><svg class="w-5 h-5 text-white mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span><strong>Intervensi Utama:</strong> Penanaman pokok pudina (Mint) di premis dan kawasan komuniti.</span></li>
+                        <li class="flex items-start"><svg class="w-5 h-5 text-white mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Pengurangan sumber takungan air dan pembiakan nyamuk Aedes.</span></li>
+                    </ul>
+                </div>
+                <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:border-uitm-mint/30 hover:shadow-xl transition group">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-uitm-purple group-hover:scale-110 transition"><span class="font-bold text-xl">3</span></div>
+                        <h3 class="text-xl font-bold text-gray-900">Technology & Innovation</h3>
+                    </div>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start"><svg class="w-5 h-5 text-uitm-mint mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Sistem E-Aduan berpusat dan pemetaan geografi (GIS) interaktif taburan pokok mint.</span></li>
+                    </ul>
+                </div>
+                <div class="p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:border-uitm-mint/30 hover:shadow-xl transition group">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600 group-hover:scale-110 transition"><span class="font-bold text-xl">4</span></div>
+                        <h3 class="text-xl font-bold text-gray-900">Transmission & Protection</h3>
+                    </div>
+                    <ul class="space-y-3 text-gray-600">
+                        <li class="flex items-start"><svg class="w-5 h-5 text-uitm-mint mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg><span>Edukasi kitaran denggi dan demonstrasi perlindungan diri memanfaatkan ekstrak mint.</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="panduan" class="py-20 bg-green-50 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Panduan Penanaman Pokok Mint</h2>
+                <div class="w-20 h-1 bg-uitm-mint mx-auto rounded-full"></div>
+                <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Sertai inisiatif komuniti kami. Berikut adalah 4 langkah mudah untuk membiakkan pokok pudina di rumah anda sebagai agen penghalau nyamuk semula jadi.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="bg-white rounded-2xl p-8 shadow-md text-center relative group hover:shadow-xl transition">
+                    <div class="w-10 h-10 bg-uitm-purple text-white rounded-full flex items-center justify-center font-bold absolute -top-5 left-1/2 transform -translate-x-1/2 border-4 border-green-50">1</div>
+                    <div class="text-5xl mb-4 mt-2 group-hover:scale-110 transition duration-300">✂️</div>
+                    <h4 class="text-lg font-bold text-gray-900 mb-2">Keratan Batang</h4>
+                    <p class="text-gray-600 text-sm">Pilih batang pudina yang sihat dan potong sepanjang 4 hingga 6 inci. Buang daun di bahagian bawah.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 shadow-md text-center relative group hover:shadow-xl transition">
+                    <div class="w-10 h-10 bg-uitm-purple text-white rounded-full flex items-center justify-center font-bold absolute -top-5 left-1/2 transform -translate-x-1/2 border-4 border-green-50">2</div>
+                    <div class="text-5xl mb-4 mt-2 group-hover:scale-110 transition duration-300">🚰</div>
+                    <h4 class="text-lg font-bold text-gray-900 mb-2">Proses Berakar</h4>
+                    <p class="text-gray-600 text-sm">Rendam bahagian bawah batang ke dalam gelas berisi air bersih selama 1-2 minggu hingga akar putih keluar.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 shadow-md text-center relative group hover:shadow-xl transition">
+                    <div class="w-10 h-10 bg-uitm-purple text-white rounded-full flex items-center justify-center font-bold absolute -top-5 left-1/2 transform -translate-x-1/2 border-4 border-green-50">3</div>
+                    <div class="text-5xl mb-4 mt-2 group-hover:scale-110 transition duration-300">🪴</div>
+                    <h4 class="text-lg font-bold text-gray-900 mb-2">Penanaman</h4>
+                    <p class="text-gray-600 text-sm">Pindahkan keratan yang berakar ke dalam pasu yang mengandungi tanah gembur bersaliran baik.</p>
+                </div>
+                <div class="bg-white rounded-2xl p-8 shadow-md text-center relative group hover:shadow-xl transition">
+                    <div class="w-10 h-10 bg-uitm-purple text-white rounded-full flex items-center justify-center font-bold absolute -top-5 left-1/2 transform -translate-x-1/2 border-4 border-green-50">4</div>
+                    <div class="text-5xl mb-4 mt-2 group-hover:scale-110 transition duration-300">☀️</div>
+                    <h4 class="text-lg font-bold text-gray-900 mb-2">Penjagaan</h4>
+                    <p class="text-gray-600 text-sm">Letakkan di tempat separa teduh (elak matahari terik) dan siram air setiap hari untuk pastikan tanah lembap.</p>
+                </div>
+            </div>
+            <div class="mt-12 text-center">
+                <a href="#aduan" class="inline-block px-8 py-3 rounded-full bg-uitm-purple text-white font-semibold hover:bg-indigo-800 transition shadow-lg">Tiada Pokok? Mohon Benih Mint Kami</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="peta" class="py-20 bg-gray-50 border-t border-gray-200 relative z-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Pemetaan GIS Komuniti</h2>
+                <div class="w-20 h-1 bg-uitm-mint mx-auto rounded-full"></div>
+                <p class="mt-4 text-gray-600 max-w-2xl mx-auto mb-8">Perbandingan kepadatan kes denggi (Heatmap) dan taburan intervensi hijau penanaman pokok mint.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 relative z-20">
+                <div class="bg-white rounded-2xl p-6 shadow-md border-b-4 border-red-500 flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-bold mb-1 uppercase tracking-wider">Jumlah Kes Terkumpul</p>
+                        <h3 id="stat-kes" class="text-5xl font-extrabold text-gray-900">0</h3>
+                    </div>
+                    <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center text-red-500 text-3xl shadow-inner">🦠</div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-md border-b-4 border-uitm-mint flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm font-bold mb-1 uppercase tracking-wider">Pokok Mint Ditanam</p>
+                        <h3 id="stat-mint" class="text-5xl font-extrabold text-gray-900">0</h3>
+                    </div>
+                    <div class="w-16 h-16 rounded-full bg-teal-50 flex items-center justify-center text-uitm-mint text-3xl shadow-inner">🌱</div>
+                </div>
+            </div>
+
+            <div class="mb-6 bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex flex-col md:flex-row gap-4 items-end justify-center relative z-20">
+                <div class="w-full md:w-auto">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Dari Tarikh</label>
+                    <input type="date" id="tarikhMula" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-uitm-mint focus:border-uitm-mint text-gray-700 outline-none transition">
+                </div>
+                <div class="w-full md:w-auto">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Hingga Tarikh</label>
+                    <input type="date" id="tarikhAkhir" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-uitm-mint focus:border-uitm-mint text-gray-700 outline-none transition">
+                </div>
+                <div class="flex gap-3 w-full md:w-auto mt-2 md:mt-0">
+                    <button onclick="tapisTarikh()" class="flex-1 md:flex-none px-6 py-2 bg-uitm-mint text-white font-semibold rounded-lg shadow hover:bg-teal-600 transition transform hover:-translate-y-1">Tapis</button>
+                    <button onclick="resetTapis()" class="flex-1 md:flex-none px-6 py-2 bg-gray-200 text-gray-700 font-semibold rounded-lg shadow hover:bg-gray-300 transition">Reset</button>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-xl border border-gray-100 relative z-10">
+                <div id="map" class="h-[500px] w-full rounded-xl z-10 relative"></div>
+                <div class="mt-4 flex flex-wrap justify-center gap-6 text-sm text-gray-600">
+                    <div class="flex items-center">
+                        <div class="w-4 h-4 rounded-full bg-red-600 text-white font-bold flex items-center justify-center text-[10px] mr-2 shadow">#</div> Jumlah Kes (Hotspot)
+                    </div>
+                    <div class="flex items-center"><span class="text-xl mr-1">🌱</span> Intervensi Penanaman Mint</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="graf" class="py-20 bg-white border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Analisis Trend & Intervensi</h2>
+                <div class="w-20 h-1 bg-uitm-mint mx-auto rounded-full"></div>
+                <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Paparan graf interaktif membandingkan corak taburan kes denggi yang dilaporkan dan perkembangan aktiviti penanaman pokok mint dalam komuniti.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-gray-50 p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <h3 class="text-lg font-bold text-uitm-purple mb-4 text-center">Tren Harian Kes Denggi di Pangsapuri Baiduri</h3>
+                    <div class="relative h-[350px] w-full"><canvas id="dailyChart"></canvas></div>
+                </div>
+                <div class="bg-gray-50 p-6 rounded-2xl shadow-lg border border-gray-100">
+                    <h3 class="text-lg font-bold text-uitm-purple mb-4 text-center">Tren Bulanan Kes Denggi dan Penanaman Pokok Mint</h3>
+                    <div class="relative h-[350px] w-full"><canvas id="yearlyChart"></canvas></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="aduan" class="py-20 bg-white border-t border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-br from-uitm-purple to-purple-900 rounded-3xl p-8 md:p-12 shadow-2xl text-white relative overflow-hidden">
+                <svg class="absolute top-0 right-0 transform translate-x-1/3 -translate-y-1/3 opacity-10 w-96 h-96" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path fill="#FFFFFF" d="M44.7,-76.4C58.9,-69.2,71.8,-59.1,80.8,-46.3C89.8,-33.5,94.9,-18,94.6,-2.8C94.3,12.4,88.6,27.3,79.5,40.1C70.4,52.9,57.9,63.6,43.6,71.2C29.3,78.8,13.2,83.3,-2.3,87.3C-17.8,91.3,-32.7,84.8,-45.5,76C-58.3,67.2,-69,56.1,-77.3,42.9C-85.6,29.7,-91.5,14.4,-91.3,-0.6C-91.1,-15.6,-84.8,-30.3,-76.3,-43.3C-67.8,-56.3,-57.1,-67.6,-43.8,-75.4C-30.5,-83.2,-14.6,-87.5,1.1,-89.4C16.8,-91.3,30.5,-83.6,44.7,-76.4Z" transform="translate(100 100)" /></svg>
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-bold mb-2">Portal Komunikasi & E-Aduan</h2>
+                    <p class="text-purple-100 mb-8">Bantu kami komuniti bebas denggi. Laporkan kawasan pembiakan Aedes atau mohon sumbangan anak pokok mint dari pasukan kami.</p>
+                    <form id="borangAduan" onsubmit="hantarAduan(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-purple-100 mb-1">Nama Penuh</label>
+                                <input type="text" id="nama" required class="w-full px-4 py-3 rounded-xl bg-white/10 border border-purple-300/30 focus:border-uitm-mint focus:ring-2 focus:ring-uitm-mint text-white placeholder-purple-200 outline-none transition" placeholder="Ali bin Abu">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-purple-100 mb-1">No. Telefon (WhatsApp)</label>
+                                <input type="tel" id="telefon" required class="w-full px-4 py-3 rounded-xl bg-white/10 border border-purple-300/30 focus:border-uitm-mint focus:ring-2 focus:ring-uitm-mint text-white placeholder-purple-200 outline-none transition" placeholder="0123456789">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-purple-100 mb-1">Jenis Laporan / Permohonan</label>
+                            <select id="jenis" required class="w-full px-4 py-3 rounded-xl bg-white/10 border border-purple-300/30 focus:border-uitm-mint focus:ring-2 focus:ring-uitm-mint text-white placeholder-purple-200 outline-none transition [&>option]:text-gray-900">
+                                <option value="" disabled selected>Sila pilih...</option>
+                                <option value="Aduan Tempat Pembiakan Aedes">Aduan Tempat Pembiakan Aedes</option>
+                                <option value="Permohonan Pokok Mint">Mohon Anak Pokok Mint</option>
+                                <option value="Pertanyaan Umum">Pertanyaan Umum Program KTP</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-purple-100 mb-1">Lokasi / Keterangan Lanjut</label>
+                            <textarea id="keterangan" rows="3" required class="w-full px-4 py-3 rounded-xl bg-white/10 border border-purple-300/30 focus:border-uitm-mint focus:ring-2 focus:ring-uitm-mint text-white placeholder-purple-200 outline-none transition" placeholder="Sila nyatakan butiran lokasi atau soalan anda..."></textarea>
+                        </div>
+                        <div class="flex items-center gap-4 pt-2">
+                            <button type="submit" id="btnHantar" class="px-8 py-3 bg-uitm-mint hover:bg-teal-500 text-white font-bold rounded-xl shadow-lg transition transform hover:-translate-y-1 w-full md:w-auto">Hantar Laporan</button>
+                            <div id="statusBorang" class="text-sm font-medium hidden"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-8 text-center">
+                <p class="text-gray-600 mb-3">Ingin bercakap terus dengan urusetia kami?</p>
+                <a href="https://wa.me/60192221398" target="_blank" class="inline-flex items-center text-green-600 hover:text-green-700 font-bold transition">
+                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                    WhatsApp Pasukan NHSE3
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="program-terkini" class="py-20 bg-gray-50 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Aktiviti & Program Terkini</h2>
+                <div class="w-20 h-1 bg-uitm-mint mx-auto rounded-full"></div>
+            </div>
+            <div id="loading-program" class="flex justify-center items-center py-10"><span class="text-gray-600 font-medium">Memuat turun data...</span></div>
+            <div id="program-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
+        </div>
+    </section>
+
+    <section id="galeri" class="py-16 bg-white overflow-hidden border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Galeri Multimedia</h2>
+            <div class="w-20 h-1 bg-uitm-mint mx-auto rounded-full mb-8"></div>
+            <p class="text-gray-600 max-w-2xl mx-auto">Sekitar aktiviti komuniti melalui lensa kamera dan video.</p>
+        </div>
+        <div class="mb-16">
+            <h3 class="text-xl font-bold text-uitm-purple mb-6 text-center">📸 Lensa Gambar</h3>
+            <div id="loading-galeri-gambar" class="flex justify-center items-center py-6 hidden"><span class="text-gray-500">Memuat turun gambar...</span></div>
+            <div class="relative w-full overflow-hidden no-scrollbar">
+                <div class="absolute top-0 left-0 h-full w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+                <div class="absolute top-0 right-0 h-full w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+                <div id="galeri-gambar-track" class="flex gap-6 w-max animate-scroll pause-on-hover px-4"></div>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-xl font-bold text-uitm-purple mb-6 text-center">🎥 Lensa Video</h3>
+            <div id="loading-galeri-video" class="flex justify-center items-center py-6 hidden"><span class="text-gray-500">Memuat turun video...</span></div>
+            <div id="galeri-video-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        </div>
+    </section>
+
+    <section id="pasukan" class="py-20 bg-gray-50 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+                <div class="w-full md:w-1/2 grid grid-cols-2 gap-4">
+                    <div class="relative group overflow-hidden rounded-2xl shadow-xl aspect-[3/4]">
+                        <img src="http://www.uitm.work/nshe3/penasihat.jpeg" alt="Profesor Dr Nazri Che Dom" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                        <div class="absolute inset-x-0 bottom-0 bg-uitm-purple/90 p-4 text-center">
+                            <p class="text-white font-bold text-xs md:text-sm">Profesor Dr Nazri Che Dom</p>
+                            <p class="text-uitm-gold text-[10px] md:text-xs">Penasihat Projek</p>
+                        </div>
+                    </div>
+                    <div class="relative group overflow-hidden rounded-2xl shadow-xl aspect-[3/4]">
+                        <img src="http://www.ikjon.info/nhse3/editorial.jpeg" alt="Pasukan Pelaksana NHSE3" class="w-full h-full object-cover transition duration-500 group-hover:scale-110">
+                        <div class="absolute inset-x-0 bottom-0 bg-uitm-mint/90 p-4 text-center">
+                            <p class="text-white font-bold text-xs md:text-sm">Pasukan Pelaksana</p>
+                            <p class="text-teal-50 text-[10px] md:text-xs">Pelajar NHSE3 UiTM</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2">
+                    <div class="inline-flex items-center space-x-2 bg-uitm-mint/20 text-teal-800 py-1 px-3 rounded-full text-sm font-semibold mb-6">
+                        <span>Diuruskan Oleh Pelajar UiTM</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Barisan Pelaksana <br><span class="text-uitm-purple">Kelas NHSE3</span></h2>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Projek VEKTORXPOSE ini digerakkan sebagai salah satu inisiatif Knowledge Transfer Programme (KTP) dalam memberi kesedaran mengenai ancaman denggi kepada komuniti di bawah bimbingan <strong class="text-uitm-purple">Profesor Dr Nazri Che Dom</strong>, dengan tumpuan khusus kepada kawalan vektor biologi melalui tanaman pokok mint.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pautan" class="py-16 bg-white border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Pautan Berkaitan</h2>
+                <div class="w-20 h-1 bg-uitm-mint mx-auto rounded-full"></div>
+            </div>
+            <div id="loading-pautan" class="flex justify-center items-center py-6 hidden"><span class="text-gray-500">Memuat turun pautan...</span></div>
+            <div id="pautan-container" class="flex flex-wrap justify-center gap-4"></div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-uitm-mint relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <h2 class="text-3xl font-bold text-white mb-4">Jangan Terlepas Info Terkini!</h2>
+            <p class="text-teal-50 mb-8 text-lg">Tinggalkan emel anda untuk menerima info terkini</p>
+            <form id="borangLangganan" onsubmit="hantarLangganan(event)" class="max-w-lg mx-auto flex flex-col sm:flex-row gap-3">
+                <input type="email" id="emelLangganan" required placeholder="Masukkan alamat emel anda..." class="flex-grow px-5 py-3 rounded-full text-gray-900 focus:outline-none focus:ring-4 focus:ring-teal-300 shadow-lg">
+                <button type="submit" id="btnLanggan" class="px-8 py-3 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-full shadow-lg transition transform hover:-translate-y-1 whitespace-nowrap">Langgan</button>
+            </form>
+            <div id="statusLangganan" class="mt-4 text-sm font-medium hidden"></div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white pt-16 pb-8 border-t-4 border-uitm-mint">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <div>
+                    <a href="#" class="flex items-center space-x-2 mb-6">
+                        <img src="https://www.uitm.work/logoxpose.png" alt="Logo VEKTORXPOSE" class="w-8 h-8 object-contain bg-white rounded">
+                        <span class="text-2xl font-bold tracking-tight">VEKTORXPOSE</span>
+                    </a>
+                    <p class="text-gray-400">Program KTP Membasmi Denggi - Mengintegrasikan kawalan vektor melalui penanaman komuniti pokok pudina (Mint).</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Pautan Pantas</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#peta" class="hover:text-uitm-mint transition">Pemetaan Komuniti</a></li>
+                        <li><a href="#aduan" class="hover:text-uitm-mint transition">E-Aduan & Permohonan</a></li>
+                        <li><a href="#program-terkini" class="hover:text-uitm-mint transition">Program Terkini</a></li>
+                        <li><a href="#galeri" class="hover:text-uitm-mint transition">Galeri Aktiviti</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-4">Hubungi Kami</h4>
+                    <p class="text-gray-400 mb-2">Universiti Teknologi MARA (UiTM)</p>
+                    <p class="text-gray-400 mb-2">Kumpulan/Kelas: NHSE3</p>
+                    <p class="text-gray-400">Program KTP Kesedaran Denggi</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2026 VEKTORXPOSE. Hak Cipta Terpelihara Pelajar UiTM NHSE3.</p>
+                <div class="mt-4 md:mt-0 flex space-x-4"><span>UiTM Cawangan Kampus Puncak Alam</span></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <script>
+        // ==============================================================
+        // 1. MASUKKAN URL WEB APP GOOGLE SCRIPT (API) KAU DI SINI
+        // ==============================================================
+        const GAS_URL = "https://script.googleusercontent.com/a/macros/student.uitm.edu.my/echo?user_content_key=AUkAhnR7r7G67XlPtCA6yQ3o3-BuQhYzagr5K_LYi_y_r170afIW2CjUJoXn85-upiHVqlWVw-FQQupruVcNKEGB4ijbb8aRy0_aO18M8LyeN7G_lRT5xmu7KlORSNAnXTu07UeRqkebvOLgHMj405YUJEROLja-ykbIqHfSdMImCaQm-Euwvy5PQAnZECN69eRSIoAua_fRNQcy-dZ4Jtax4aB8RzHVAhiMrAfQAaFmwbihBulNmHyStyTUM_9BI-7iXqq6EOM5hCt9NZl36Vwx7ZDUf0BRvDBxP9X_jjyGIxkYehpNfE0&lib=MnkQCK_8FbK_EtXnc2Z0zaEHoBNWSb1nm";
+
+        var map, hotspotLayer, mintLayer;
+        var dailyChartInstance, yearlyChartInstance;
+        var rawDataKes = [], rawDataMint = [];
+
+        function initMap() {
+            map = L.map('map').setView([3.200, 101.400], 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+            hotspotLayer = L.layerGroup().addTo(map);
+            mintLayer = L.layerGroup().addTo(map);
+            L.control.layers(null, { "Kepadatan Kes Denggi": hotspotLayer, "Lokasi Pokok Mint": mintLayer }, {collapsed: false}).addTo(map);
+        }
+
+        function paparPeta(kesArray, mintArray) {
+            hotspotLayer.clearLayers();
+            mintLayer.clearLayers();
+            let heatPoints = [], mapBounds = [], kesBerkumpulan = [];
+            const CLUSTER_RADIUS = 0.0005; 
+
+            if (kesArray) {
+                kesArray.forEach(kes => {
+                    let lat = parseFloat(kes.LATITUDE), lng = parseFloat(kes.LONGITUDE);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        heatPoints.push([lat, lng, 1]); mapBounds.push([lat, lng]);
+                        let dijumpaiDalamKluster = false;
+                        for (let i = 0; i < kesBerkumpulan.length; i++) {
+                            let kluster = kesBerkumpulan[i];
+                            let jarakEuclidean = Math.sqrt(Math.pow(kluster.lat - lat, 2) + Math.pow(kluster.lng - lng, 2));
+                            if (jarakEuclidean < CLUSTER_RADIUS) {
+                                kluster.count++;
+                                if (kes.LOKALITI && kes.LOKALITI !== '-' && !kluster.lokaliti.includes(kes.LOKALITI)) {
+                                    if(kluster.lokaliti.split(",").length < 2) kluster.lokaliti = kluster.lokaliti === '-' ? kes.LOKALITI : kluster.lokaliti + ", " + kes.LOKALITI;
+                                    else if (!kluster.lokaliti.includes("...")) kluster.lokaliti += " dan kawasan sekitar...";
+                                }
+                                dijumpaiDalamKluster = true; break;
+                            }
+                        }
+                        if (!dijumpaiDalamKluster) kesBerkumpulan.push({ lat: lat, lng: lng, count: 1, lokaliti: kes.LOKALITI || '-' });
+                    }
+                });
+                kesBerkumpulan.forEach(lokasi => {
+                    let nomborIcon = L.divIcon({ className: '', html: `<div class="bg-red-600 text-white font-bold rounded-full w-8 h-8 flex items-center justify-center border-2 border-white shadow-lg text-sm">${lokasi.count}</div>`, iconSize: [32, 32], iconAnchor: [16, 16] });
+                    L.marker([lokasi.lat, lokasi.lng], { icon: nomborIcon }).bindPopup(`<b class='text-red-600 text-sm'>Zon Kes Dilaporkan</b><br>Kawasan ini merekodkan <b>${lokasi.count} kes</b> denggi.<br><b>Lokaliti:</b> ${lokasi.lokaliti}`).addTo(hotspotLayer);
+                });
+                if (typeof L.heatLayer !== 'undefined' && heatPoints.length > 0) L.heatLayer(heatPoints, { radius: 40, blur: 25, maxZoom: 14, minOpacity: 0.6, gradient: {0.4: 'yellow', 0.6: 'orange', 1: 'red'} }).addTo(hotspotLayer);
+            }
+
+            if (mintArray) {
+                var mintIcon = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/628/628283.png', iconSize: [32, 32], iconAnchor: [16, 32], popupAnchor: [0, -32] });
+                mintArray.forEach(mint => {
+                    let lat = parseFloat(mint.LATITUDE), lng = parseFloat(mint.LONGITUDE);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        mapBounds.push([lat, lng]);
+                        L.marker([lat, lng], {icon: mintIcon}).bindPopup(`<b class="text-teal-600">Projek Tanaman Mint</b><br><b>Penanam:</b> ${mint.NAMA || '-'}<br><b>Alamat:</b> ${mint.ALAMAT || '-'}<br><b>Lokaliti:</b> ${mint.LOKALITI || '-'}<br><b>Tarikh Tanam:</b> ${mint['TARIKH TANAM'] || '-'}<br><b>Status:</b> <span class="text-green-600 font-bold">${mint.STATUS || '-'}</span>`).addTo(mintLayer);
+                    }
+                });
+            }
+            if (mapBounds.length > 0) map.fitBounds(mapBounds, {padding: [50, 50]});
+        }
+
+        function paparStatistik(kesArray, mintArray) {
+            document.getElementById('stat-kes').innerText = kesArray ? kesArray.length : 0;
+            document.getElementById('stat-mint').innerText = mintArray ? mintArray.length : 0;
+        }
+
+        function paparGraf(kesArray, mintArray) {
+            paparGrafHarian(kesArray, mintArray);
+            paparGrafTahunan(kesArray, mintArray); 
+        }
+
+        function paparGrafHarian(kesArray, mintArray) {
+            const ctx = document.getElementById('dailyChart');
+            if(!ctx) return;
+            const dateData = {};
+            function addDateData(dStr, type) {
+                if(!dStr) return;
+                let d = parseCustomDate(dStr);
+                if (isNaN(d.getTime()) || d.getFullYear() < 2000) return;
+                let year = d.getFullYear(), month = String(d.getMonth() + 1).padStart(2, '0'), day = String(d.getDate()).padStart(2, '0');
+                let key = `${year}-${month}-${day}`, displayDate = `${day}/${month}/${year}`;
+                if (!dateData[key]) dateData[key] = { display: displayDate, kes: 0, mint: 0 };
+                dateData[key][type]++;
+            }
+            if (kesArray) kesArray.forEach(kes => addDateData(kes['TARIKH ONSET'] || kes['TARIKH'], 'kes'));
+            if (mintArray) mintArray.forEach(mint => addDateData(mint['TARIKH TANAM'] || mint['TARIKH'], 'mint'));
+            const sortedKeys = Object.keys(dateData).sort();
+            if (dailyChartInstance) dailyChartInstance.destroy();
+            if (sortedKeys.length === 0) return;
+            dailyChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sortedKeys.map(k => dateData[k].display),
+                    datasets: [
+                        { label: 'Kes Denggi', data: sortedKeys.map(k => dateData[k].kes), borderColor: '#e91e63', backgroundColor: 'rgba(233, 30, 99, 0.2)', borderWidth: 2, pointBackgroundColor: '#e91e63', tension: 0.3, fill: true },
+                        { label: 'Mint Ditanam', data: sortedKeys.map(k => dateData[k].mint), borderColor: '#20B2AA', backgroundColor: 'rgba(32, 178, 170, 0.2)', borderWidth: 2, pointBackgroundColor: '#20B2AA', tension: 0.3, fill: true }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } }, x: { ticks: { maxRotation: 45, minRotation: 45 } } } }
+            });
+        }
+
+        function paparGrafTahunan(kesArray, mintArray) {
+            const ctx = document.getElementById('yearlyChart');
+            if(!ctx) return;
+            if (yearlyChartInstance) yearlyChartInstance.destroy();
+            if ((!kesArray || kesArray.length === 0) && (!mintArray || mintArray.length === 0)) return;
+            let cutoffYear = new Date().getFullYear(), cutoffMonth = new Date().getMonth();
+            let akhirStr = document.getElementById('tarikhAkhir').value;
+            if (akhirStr) {
+                let d = new Date(akhirStr);
+                if (!isNaN(d.getTime())) { cutoffYear = d.getFullYear(); cutoffMonth = d.getMonth(); }
+            }
+            const yearlyDataKes = {}, yearlyDataMint = {};
+            if (kesArray) kesArray.forEach(kes => {
+                let d = parseCustomDate(kes['TARIKH ONSET'] || kes['TARIKH']);
+                if (isNaN(d.getTime()) || d.getFullYear() < 2000) return;
+                let year = d.getFullYear(), month = d.getMonth();
+                if (!yearlyDataKes[year]) yearlyDataKes[year] = Array(12).fill(0);
+                yearlyDataKes[year][month]++;
+            });
+            if (mintArray) mintArray.forEach(mint => {
+                let d = parseCustomDate(mint['TARIKH TANAM'] || mint['TARIKH']);
+                if (isNaN(d.getTime()) || d.getFullYear() < 2000) return;
+                let year = d.getFullYear(), month = d.getMonth();
+                if (!yearlyDataMint[year]) yearlyDataMint[year] = Array(12).fill(0);
+                yearlyDataMint[year][month]++;
+            });
+            const labels = ['Jan', 'Feb', 'Mac', 'Apr', 'Mei', 'Jun', 'Jul', 'Ogo', 'Sep', 'Okt', 'Nov', 'Dis'], colors = ['#4B0082', '#FFD700', '#ff5722', '#e91e63', '#3f51b5', '#4caf50', '#20B2AA'], datasets = [];
+            Array.from(new Set([...Object.keys(yearlyDataKes), ...Object.keys(yearlyDataMint)])).sort().forEach((year, index) => {
+                let yearInt = parseInt(year), baseColor = colors[index % colors.length];
+                if (yearlyDataKes[year]) {
+                    let dataBulananKes = [...yearlyDataKes[year]];
+                    if (yearInt === cutoffYear) for (let m = cutoffMonth + 1; m < 12; m++) dataBulananKes[m] = null;
+                    else if (yearInt > cutoffYear) for (let m = 0; m < 12; m++) dataBulananKes[m] = null;
+                    datasets.push({ label: `Kes Denggi (${year})`, data: dataBulananKes, borderColor: baseColor, backgroundColor: baseColor + '33', borderWidth: 2, pointBackgroundColor: baseColor, tension: 0.4, fill: false });
+                }
+                if (yearlyDataMint[year]) {
+                    let dataBulananMint = [...yearlyDataMint[year]];
+                    if (yearInt === cutoffYear) for (let m = cutoffMonth + 1; m < 12; m++) dataBulananMint[m] = null;
+                    else if (yearInt > cutoffYear) for (let m = 0; m < 12; m++) dataBulananMint[m] = null;
+                    datasets.push({ type: 'bar', label: `Mint Ditanam (${year})`, data: dataBulananMint, backgroundColor: baseColor + '80', borderColor: baseColor, borderWidth: 1, borderRadius: 4 });
+                }
+            });
+            yearlyChartInstance = new Chart(ctx, { type: 'line', data: { labels: labels, datasets: datasets }, options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } } });
+        }
+
+        function parseCustomDate(dStr) {
+            if(!dStr) return new Date(0);
+            let parts = dStr.split(/[\/\-]/);
+            if(parts.length === 3 && parts[2].length === 4) return new Date(parts[2], parts[1]-1, parts[0]);
+            return new Date(dStr);
+        }
+
+        function tapisTarikh() {
+            let mulaStr = document.getElementById('tarikhMula').value, akhirStr = document.getElementById('tarikhAkhir').value;
+            let dMula = mulaStr ? new Date(mulaStr) : new Date('2000-01-01'), dAkhir = akhirStr ? new Date(akhirStr) : new Date();
+            dAkhir.setHours(23, 59, 59, 999);
+            let filteredKes = rawDataKes.filter(k => { let d = parseCustomDate(k['TARIKH ONSET'] || k['TARIKH']); return d >= dMula && d <= dAkhir; });
+            let filteredMint = rawDataMint.filter(m => { let d = parseCustomDate(m['TARIKH TANAM'] || m['TARIKH']); return d >= dMula && d <= dAkhir; });
+            paparPeta(filteredKes, filteredMint); paparGraf(filteredKes, filteredMint); paparStatistik(filteredKes, filteredMint);
+        }
+
+        function resetTapis() {
+            document.getElementById('tarikhMula').value = ''; document.getElementById('tarikhAkhir').value = ''; tapisTarikh();
+        }
+
+        // ==============================================================
+        // FUNGSI FETCH UNTUK API GOOGLE SCRIPT
+        // ==============================================================
+        async function ambilDataGoogleSheet() {
+            document.getElementById('loading-galeri-gambar').classList.remove('hidden');
+            document.getElementById('loading-galeri-video').classList.remove('hidden');
+            document.getElementById('loading-pautan').classList.remove('hidden');
+
+            try {
+                const response = await fetch(GAS_URL);
+                const result = await response.json();
+                
+                if(result.status === "success") {
+                    const data = result.data;
+                    paparProgram(data.program);
+                    if(data.galeriGambar) paparGaleriGambar(data.galeriGambar);
+                    if(data.galeriVideo) paparGaleriVideo(data.galeriVideo);
+                    if(data.pautan) paparPautan(data.pautan);
+                    
+                    if(data.lokasiKes || data.lokasiMint) {
+                        rawDataKes = data.lokasiKes || [];
+                        rawDataMint = data.lokasiMint || [];
+                        tapisTarikh();
+                    }
+                }
+            } catch (error) {
+                document.getElementById('loading-program').innerHTML = '<p class="text-red-500 text-center">Gagal memuat turun data dari pangkalan.</p>';
+            }
+        }
+
+        async function hantarAduan(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnHantar');
+            const status = document.getElementById('statusBorang');
+            btn.innerHTML = 'Menghantar...'; btn.disabled = true; status.classList.add('hidden');
+
+            const data = {
+                nama: document.getElementById('nama').value, telefon: document.getElementById('telefon').value,
+                jenis: document.getElementById('jenis').value, keterangan: document.getElementById('keterangan').value,
+                tarikh: new Date().toLocaleDateString()
+            };
+
+            try {
+                await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'aduan', data: data }) });
+                status.innerHTML = 'Laporan berjaya dihantar. Terima kasih!'; status.className = 'text-sm font-medium text-green-500 block mt-2';
+                document.getElementById('borangAduan').reset();
+            } catch (error) {
+                status.innerHTML = 'Ralat. Sila cuba lagi.'; status.className = 'text-sm font-medium text-red-500 block mt-2';
+            } finally {
+                btn.innerHTML = 'Hantar Laporan'; btn.disabled = false;
+            }
+        }
+
+        async function hantarLangganan(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnLanggan'), status = document.getElementById('statusLangganan'), emailInput = document.getElementById('emelLangganan');
+            btn.innerHTML = 'Memproses...'; btn.disabled = true; status.classList.add('hidden');
+
+            try {
+                await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action: 'langganan', emel: emailInput.value }) });
+                status.innerHTML = 'Terima kasih! Emel anda telah didaftarkan.'; status.className = 'text-sm font-medium text-white block mt-4 bg-teal-600/50 py-2 rounded-lg';
+                emailInput.value = '';
+            } catch (error) {
+                status.innerHTML = 'Ralat. Sila cuba lagi.'; status.className = 'text-sm font-medium text-red-200 block mt-4';
+            } finally {
+                btn.innerHTML = 'Langgan Sekarang'; btn.disabled = false;
+            }
+        }
+
+        // ==============================================================
+        // FUNGSI RENDER UI
+        // ==============================================================
+        function paparProgram(programArray) {
+            const container = document.getElementById('program-container'), loader = document.getElementById('loading-program');
+            loader.classList.add('hidden'); container.classList.remove('hidden');
+            if (!programArray || programArray.length === 0) return;
+            let html = '';
+            programArray.forEach(prog => {
+                const imgUrl = prog.GambarURL || 'https://www.ikjon.info/nhse3/editorial.jpeg';
+                html += `<div class="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 hover:shadow-xl transition flex flex-col h-full"><img src="${imgUrl}" alt="${prog.Tajuk}" class="w-full h-48 object-cover"><div class="p-6 flex-grow flex flex-col"><div class="flex items-center text-sm text-gray-500 mb-3 space-x-4"><span class="flex items-center"><svg class="w-4 h-4 mr-1 text-uitm-gold" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path></svg>${prog.Tarikh}</span></div><h3 class="text-xl font-bold text-gray-900 mb-2">${prog.Tajuk}</h3><p class="text-gray-600 mb-4 flex-grow">${prog.Penerangan}</p></div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function paparGaleriGambar(galeriArray) {
+            const track = document.getElementById('galeri-gambar-track'), loader = document.getElementById('loading-galeri-gambar');
+            loader.classList.add('hidden');
+            if (!galeriArray || galeriArray.length === 0) { track.innerHTML = '<p class="text-gray-500 w-full text-center">Tiada gambar terkini.</p>'; return; }
+            let html = '';
+            galeriArray.forEach(item => {
+                const imgUrl = item.URLGambar || 'https://www.ikjon.info/nhse3/editorial.jpeg';
+                html += `<div class="w-72 h-48 flex-shrink-0 rounded-2xl overflow-hidden shadow-md group relative"><img src="${imgUrl}" alt="${item.Kapsyen}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110"><div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-4"><p class="text-white font-medium text-sm drop-shadow-md">${item.Kapsyen || 'Aktiviti Komuniti'}</p></div></div>`;
+            });
+            track.innerHTML = html + html;
+        }
+
+        function paparGaleriVideo(videoArray) {
+            const container = document.getElementById('galeri-video-container'), loader = document.getElementById('loading-galeri-video');
+            loader.classList.add('hidden');
+            if (!videoArray || videoArray.length === 0) { container.innerHTML = '<p class="text-gray-500 col-span-full text-center">Tiada video terkini.</p>'; return; }
+            let html = '';
+            videoArray.forEach(item => {
+                if(!item.URLVideo) return;
+                html += `<div class="bg-gray-50 rounded-2xl overflow-hidden shadow-md border border-gray-100 hover:shadow-xl transition p-2"><div class="relative w-full pb-[56.25%] h-0 rounded-xl overflow-hidden bg-black"><iframe src="${item.URLVideo}" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="absolute top-0 left-0 w-full h-full"></iframe></div><div class="p-4 text-center"><h4 class="font-bold text-gray-800 text-sm">${item['Tajuk Video'] || 'Video Komuniti'}</h4><p class="text-xs text-gray-500 mt-1">${item.Tarikh || ''}</p></div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function paparPautan(pautanArray) {
+            const container = document.getElementById('pautan-container'), loader = document.getElementById('loading-pautan');
+            if(loader) loader.classList.add('hidden');
+            if (!pautanArray || pautanArray.length === 0) { if(container) container.innerHTML = '<p class="text-gray-500 text-center w-full">Tiada pautan pada masa ini.</p>'; return; }
+            let html = '';
+            pautanArray.forEach(item => {
+                const nama = item.Nama || 'Pautan', url = item.URL || '#';
+                if(url !== '#') html += `<a href="${url}" target="_blank" class="inline-flex items-center px-6 py-3 bg-white border border-gray-200 rounded-xl shadow-sm hover:shadow-md hover:border-uitm-mint transition group"><span class="font-semibold text-gray-800 group-hover:text-uitm-mint">${nama}</span><svg class="w-4 h-4 ml-2 text-gray-400 group-hover:text-uitm-mint transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg></a>`;
+            });
+            if(container) container.innerHTML = html;
+        }
+
+        async function muatTurunCuaca() {
+            try {
+                const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=2.902906&longitude=101.861487&current=temperature_2m,relative_humidity_2m,weather_code&timezone=Asia/Singapore');
+                const data = await response.json();
+                if(data && data.current) {
+                    document.getElementById('weather-temp').innerText = Math.round(data.current.temperature_2m) + '°C';
+                    document.getElementById('weather-humidity').innerText = Math.round(data.current.relative_humidity_2m) + '%';
+                    let code = data.current.weather_code, desc = "Cerah", icon = "☀️";
+                    if(code >= 1 && code <= 3) { desc = "Berawan"; icon = "⛅"; }
+                    else if(code >= 45 && code <= 48) { desc = "Kabus"; icon = "🌫️"; }
+                    else if(code >= 51 && code <= 67) { desc = "Hujan Renyai"; icon = "🌦️"; }
+                    else if(code >= 71 && code <= 82) { desc = "Hujan Lebat"; icon = "🌧️"; }
+                    else if(code >= 95) { desc = "Ribut Petir"; icon = "⛈️"; }
+                    document.getElementById('weather-desc').innerText = desc;
+                    document.getElementById('weather-icon').innerText = icon;
+                }
+            } catch(e) {
+                document.getElementById('weather-desc').innerText = "Gagal dimuat"; document.getElementById('weather-icon').innerText = "☁️";
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            muatTurunCuaca(); initMap(); ambilDataGoogleSheet();
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
 </body>
 </html>
