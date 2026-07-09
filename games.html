@@ -210,7 +210,7 @@
         let width, height;
         let isPlaying = false;
         let score = 0;
-        let health = 5; // 5 nyawa untuk 1 rumah di tengah
+        let health = 5; 
         const TOTAL_TIME = 30;
         let timeLeft = TOTAL_TIME;
         let timerInterval;
@@ -220,22 +220,45 @@
         let mosquitos = [], particles = [], floatingTexts = [];
         let housePos = { x: 0, y: 0 };
         
-        // Pembolehubah untuk pemain (Senjata Pudina)
         let playerPos = { x: -1000, y: -1000 };
-        const HITBOX_RADIUS = 50; // Jangkauan libasan
         
+        // PEMBOLEHUBAH SAIZ DINAMIK (RESPONSIF)
+        let HITBOX_RADIUS = 50; 
+        let HOUSE_RADIUS = 40;
+        let HOUSE_FONT = 60;
+        let MOSQUITO_FONT = 50;
+        let PUDINA_SCALE = 1.2;
+
         function resize() {
             width = window.innerWidth;
             height = window.innerHeight;
             canvas.width = width;
             canvas.height = height;
-            // Rumah diletakkan tepat di tengah-tengah
+            
+            // Koordinat rumah di tengah-tengah
             housePos = { x: width / 2, y: height / 2 };
+
+            // LOGIK RESPONSIF
+            if (width < 768) { 
+                // Skrin kecil (Telefon pintar)
+                HITBOX_RADIUS = 35;
+                HOUSE_RADIUS = 25;
+                HOUSE_FONT = 40;
+                MOSQUITO_FONT = 35;
+                PUDINA_SCALE = 0.8;
+            } else { 
+                // Skrin besar (Tablet/PC)
+                HITBOX_RADIUS = 50;
+                HOUSE_RADIUS = 40;
+                HOUSE_FONT = 60;
+                MOSQUITO_FONT = 50;
+                PUDINA_SCALE = 1.2;
+            }
         }
         window.addEventListener('resize', resize);
         resize();
 
-        // Mengesan pergerakan jari atau tetikus untuk menggerakkan pokok pudina
+        // Mengesan pergerakan untuk kawal pudina
         function updatePlayerPos(e) {
             if (!isPlaying) return;
             if (e.type.includes('touch')) e.preventDefault(); 
@@ -246,7 +269,6 @@
         window.addEventListener('touchmove', updatePlayerPos, {passive: false});
         window.addEventListener('mousedown', updatePlayerPos);
         window.addEventListener('touchstart', updatePlayerPos, {passive: false});
-
 
         function showCustomAlert(msg, duration = 3000) {
             const alertBox = document.getElementById('customAlert');
@@ -380,7 +402,6 @@
                 else if (edge === 2) { this.x = Math.random() * width; this.y = height + margin; }
                 else { this.x = -margin; this.y = Math.random() * height; }
                 
-                // Nyamuk lebih laju sikit sebab kawasan pertahanan dah kecil
                 let speedMultiplier = 1 + ((TOTAL_TIME - timeLeft) / TOTAL_TIME) * 1.5;
                 this.speed = (80 + Math.random() * 60) * speedMultiplier; 
                 this.wobblePhase = Math.random() * Math.PI * 2;
@@ -389,7 +410,6 @@
             update(dt) {
                 if (this.isDead) return;
                 
-                // Terbang tuju ke arah rumah di tengah
                 const dx = housePos.x - this.x; 
                 const dy = housePos.y - this.y;
                 const minDist = Math.hypot(dx, dy);
@@ -403,20 +423,19 @@
                 this.x += (dx / minDist) * moveDist + wobbleX;
                 this.y += (dy / minDist) * moveDist + wobbleY;
 
-                // --- MEKANIK LIBAS (Pukul pakai pudina yang ikut cursor/jari) ---
+                // Hitbox berlanggar dengan Senjata (Pudina)
                 const distToPlayer = Math.hypot(this.x - playerPos.x, this.y - playerPos.y);
                 if (distToPlayer < HITBOX_RADIUS) {
                     this.die(); return;
                 }
                 
-                // Kena rumah
-                if (minDist < 40) { this.isDead = true; takeDamage(); }
+                // Langgar Rumah
+                if (minDist < HOUSE_RADIUS) { this.isDead = true; takeDamage(); }
             }
             die() {
                 this.isDead = true; score += 10; updateUI();
                 for(let i=0; i<8; i++) particles.push(new Particle(this.x, this.y, '52, 211, 153')); 
                 floatingTexts.push(new FloatingText(this.x, this.y - 20, 'K.O!', '#10b981'));
-                // Efek memukul/libas pada cursor
                 for(let i=0; i<4; i++) particles.push(new Particle(playerPos.x, playerPos.y, '255, 255, 255')); 
             }
             draw(ctx) {
@@ -424,7 +443,8 @@
                 ctx.save(); ctx.translate(this.x, this.y); ctx.rotate(this.angle + Math.PI/2); 
                 
                 ctx.shadowColor = 'rgba(255, 255, 255, 0.8)'; ctx.shadowBlur = 15;
-                ctx.font = '50px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
+                ctx.font = `${MOSQUITO_FONT}px Arial`; 
+                ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; 
                 ctx.fillText('🦟', 0, 0); 
                 ctx.restore();
             }
@@ -434,7 +454,7 @@
             ctx.save();
             ctx.translate(playerPos.x, playerPos.y); 
             
-            // Lukis Hitbox (Glow Aura Pudina)
+            // Hitbox Glow (Warna Hijau)
             ctx.beginPath();
             ctx.arc(0, 0, HITBOX_RADIUS, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(16, 185, 129, 0.2)';
@@ -443,8 +463,8 @@
             ctx.strokeStyle = 'rgba(16, 185, 129, 0.5)';
             ctx.stroke();
 
-            // Lukis Pudina Realistik yang mengikut jari
-            ctx.scale(1.2, 1.2); // Besarkan sikit saiz daun
+            // Skala ikut peranti
+            ctx.scale(PUDINA_SCALE, PUDINA_SCALE);
             
             const drawLeaf = (rot, scaleX, scaleY, colorDark, colorLight) => {
                 ctx.save();
@@ -531,6 +551,7 @@
             lastTime = timestamp;
 
             ctx.save();
+            // Screen shake kalau kena serang
             if (shakeTime > 0) {
                 const magnitude = 10;
                 ctx.translate((Math.random() - 0.5) * magnitude, (Math.random() - 0.5) * magnitude);
@@ -539,7 +560,7 @@
 
             drawBackground(ctx);
             
-            // Lukis 1 Rumah di Tengah
+            // Bulatan Cahaya Bawah Rumah
             ctx.beginPath();
             ctx.arc(housePos.x, housePos.y, HOUSE_RADIUS, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'; 
@@ -548,6 +569,7 @@
             ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)'; 
             ctx.stroke();
 
+            // Lukis Rumah Utama
             ctx.save();
             ctx.translate(housePos.x, housePos.y); 
             ctx.font = `${HOUSE_FONT}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
@@ -556,7 +578,6 @@
             ctx.fillText('🏠', 0, 0); 
             ctx.restore();
 
-            // Spawn nyamuk (Makin gila bila nak habis masa)
             const baseChance = 0.04; 
             const urgencyMultiplier = 1 + ((TOTAL_TIME - timeLeft) / TOTAL_TIME) * 4; 
             if (Math.random() < (baseChance * urgencyMultiplier)) mosquitos.push(new Mosquito());
@@ -576,7 +597,6 @@
                 if (ft.life <= 0) floatingTexts.splice(i, 1);
             }
 
-            // LUKIS SENJATA PUDINA DI JARI PEMAIN
             drawPlayerWeapon(ctx);
 
             ctx.restore(); 
@@ -589,13 +609,11 @@
                 document.getElementById('startScreen').classList.add('hidden');
                 document.getElementById('uiLayer').classList.remove('hidden');
                 
-                // Hilangkan cursor masa main
                 body.classList.add('cursor-hide');
                 
                 score = 0; health = 5; timeLeft = TOTAL_TIME;
                 mosquitos = []; particles = []; floatingTexts = []; shakeTime = 0;
                 
-                // Letakkan senjata di tengah bersedia melibas
                 playerPos = { x: housePos.x, y: housePos.y }; 
                 
                 isPlaying = true; updateUI();
@@ -613,7 +631,6 @@
         function gameOver() {
             isPlaying = false; clearInterval(timerInterval);
             
-            // Munculkan balik cursor tetikus
             body.classList.remove('cursor-hide');
 
             document.getElementById('uiLayer').classList.add('hidden');
