@@ -541,7 +541,7 @@
             
             // Lukis 1 Rumah di Tengah
             ctx.beginPath();
-            ctx.arc(housePos.x, housePos.y, 60, 0, Math.PI * 2);
+            ctx.arc(housePos.x, housePos.y, HOUSE_RADIUS, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'; 
             ctx.fill();
             ctx.lineWidth = 3; 
@@ -550,7 +550,7 @@
 
             ctx.save();
             ctx.translate(housePos.x, housePos.y); 
-            ctx.font = '70px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.font = `${HOUSE_FONT}px Arial`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             ctx.shadowColor = 'rgba(255, 255, 255, 0.9)'; ctx.shadowBlur = 25;
             if (shakeTime > 0) ctx.translate((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 8);
             ctx.fillText('🏠', 0, 0); 
